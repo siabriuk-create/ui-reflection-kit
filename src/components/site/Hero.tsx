@@ -1,6 +1,6 @@
 import { ShieldCheck, Timer, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroAsset from "@/assets/hero-logistics.jpg.asset.json";
+import heroAsset from "@/assets/hero-logistics-kyiv.jpg.asset.json";
 
 const STATS = [
   { icon: Timer, value: "20 годин", label: "Час доставки між містами" },
