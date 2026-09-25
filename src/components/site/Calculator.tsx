@@ -49,8 +49,9 @@ export function Calculator() {
     }
     if (oversize) {
       const count = Math.max(1, Math.min(20, Math.round(places)));
+      const word = count % 10 === 1 && count !== 11 ? "місце" : count % 10 >= 2 && count % 10 <= 4 && (count < 12 || count > 14) ? "місця" : "місць";
       lines.push({
-        label: `Габарит понад 120 см / без коробки · ${count} місце${count % 10 === 1 && count !== 11 ? "" : "ць"}`,
+        label: `Габарит понад 120 см / без коробки · ${count} ${word}`,
         amount: OVERSIZE_FEE_PER_PLACE * count,
       });
     }
