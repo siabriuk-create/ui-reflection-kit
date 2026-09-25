@@ -3,9 +3,9 @@ import { Button } from "@/components/ui/button";
 import heroAsset from "@/assets/hero-logistics.jpg.asset.json";
 
 const STATS = [
-  { icon: Timer, value: "24 год", label: "Доставка між містами" },
-  { icon: Truck, value: "1 500+", label: "Відділень по Україні" },
-  { icon: ShieldCheck, value: "99,8%", label: "Відправлень без пошкоджень" },
+  { icon: Timer, value: "20 годин", label: "Час доставки між містами" },
+  { icon: Truck, value: "4 500+", label: "Відправлень по Україні за добу" },
+  { icon: ShieldCheck, value: "99,8%", label: "Доставлено вчасно" },
 ];
 
 export function Hero() {
