@@ -17,7 +17,6 @@ type ZoneId = (typeof ZONES)[number]["id"];
 
 const VILLAGE_FEE = 30;
 const POSTAMAT_FEE = 10;
-const OVERSIZE_FEE_PER_PLACE = 100;
 const COURIER_FEE = 60;
 
 export function Calculator() {
@@ -25,8 +24,6 @@ export function Calculator() {
   const [zone, setZone] = useState<ZoneId>("city");
   const [village, setVillage] = useState(false);
   const [postamat, setPostamat] = useState(false);
-  const [oversize, setOversize] = useState(false);
-  const [places, setPlaces] = useState(1);
   const [courier, setCourier] = useState(false);
 
   const selected = SIZES.find((s) => s.id === size) ?? SIZES[0];
