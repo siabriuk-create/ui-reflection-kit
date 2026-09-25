@@ -15,15 +15,11 @@ const ZONES = [
 type SizeId = (typeof SIZES)[number]["id"];
 type ZoneId = (typeof ZONES)[number]["id"];
 
-const VILLAGE_FEE = 30;
-const POSTAMAT_FEE = 10;
 const COURIER_FEE = 60;
 
 export function Calculator() {
   const [size, setSize] = useState<SizeId>("small");
   const [zone, setZone] = useState<ZoneId>("city");
-  const [village, setVillage] = useState(false);
-  const [postamat, setPostamat] = useState(false);
   const [courier, setCourier] = useState(false);
 
   const selected = SIZES.find((s) => s.id === size) ?? SIZES[0];
@@ -38,19 +34,13 @@ export function Calculator() {
       amount: base,
     });
 
-    if (village && isUkraine) {
-      lines.push({ label: "Доставка у селище/село", amount: VILLAGE_FEE });
-    }
-    if (postamat) {
-      lines.push({ label: "Доставка у поштомат", amount: POSTAMAT_FEE });
-    }
     if (courier) {
       lines.push({ label: "Кур'єрський забір або доставка", amount: COURIER_FEE });
     }
 
     const total = lines.reduce((sum, l) => sum + l.amount, 0);
     return { lines, total };
-  }, [selected, isUkraine, village, postamat, courier]);
+  }, [selected, isUkraine, courier]);
 
   return (
     <section id="rates" className="py-20 lg:py-28">
@@ -86,9 +76,7 @@ export function Calculator() {
           </div>
           <div className="border-t border-border bg-surface/60 px-6 py-4 text-sm text-foreground/75">
             <p className="font-semibold text-primary">Додатково:</p>
-            <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">
-              <li>• Доставка у селища/села — +{VILLAGE_FEE} грн</li>
-              <li>• Доставка у поштомат — +{POSTAMAT_FEE} грн</li>
+            <ul className="mt-2">
               <li>• Кур'єрський забір або доставка — +{COURIER_FEE} грн (до 30 кг)</li>
             </ul>
           </div>
@@ -102,11 +90,7 @@ export function Calculator() {
                 Тип посилки
                 <select
                   value={size}
-                  onChange={(e) => {
-                    const next = e.target.value as SizeId;
-                    setSize(next);
-                    if (next === "large") setVillage((v) => v); // village still allowed up to 30 kg
-                  }}
+                  onChange={(e) => setSize(e.target.value as SizeId)}
                   className="mt-2 h-11 w-full rounded-xl border border-input bg-background px-3 text-sm font-normal text-foreground outline-none focus:border-accent"
                 >
                   {SIZES.map((s) => (
@@ -121,11 +105,7 @@ export function Calculator() {
                 Напрямок доставки
                 <select
                   value={zone}
-                  onChange={(e) => {
-                    const next = e.target.value as ZoneId;
-                    setZone(next);
-                    if (next === "city") setVillage(false);
-                  }}
+                  onChange={(e) => setZone(e.target.value as ZoneId)}
                   className="mt-2 h-11 w-full rounded-xl border border-input bg-background px-3 text-sm font-normal text-foreground outline-none focus:border-accent"
                 >
                   {ZONES.map((z) => (
@@ -138,34 +118,7 @@ export function Calculator() {
 
               <fieldset className="sm:col-span-2">
                 <legend className="text-sm font-semibold text-primary">Додаткові опції</legend>
-                <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                  <label className="flex items-center gap-3 rounded-xl bg-surface p-4 text-sm font-medium text-foreground/85">
-                    <input
-                      type="checkbox"
-                      checked={postamat}
-                      onChange={(e) => setPostamat(e.target.checked)}
-                      className="size-4 accent-[var(--accent)]"
-                    />
-                    Доставка у поштомат (+{POSTAMAT_FEE} грн)
-                  </label>
-
-                  <label
-                    className={
-                      "flex items-center gap-3 rounded-xl bg-surface p-4 text-sm font-medium text-foreground/85" +
-                      (isUkraine ? "" : " opacity-50")
-                    }
-                    title={isUkraine ? undefined : "Доступно лише для доставки по Україні"}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={village && isUkraine}
-                      disabled={!isUkraine}
-                      onChange={(e) => setVillage(e.target.checked)}
-                      className="size-4 accent-[var(--accent)]"
-                    />
-                    Доставка у селище/село (+{VILLAGE_FEE} грн)
-                  </label>
-
+                <div className="mt-3">
                   <label className="flex items-center gap-3 rounded-xl bg-surface p-4 text-sm font-medium text-foreground/85">
                     <input
                       type="checkbox"
