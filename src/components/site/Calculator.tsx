@@ -89,7 +89,6 @@ export function Calculator() {
             <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">
               <li>• Доставка у селища/села — +{VILLAGE_FEE} грн</li>
               <li>• Доставка у поштомат — +{POSTAMAT_FEE} грн</li>
-              <li>• Габарит понад 120 см або без коробки — +{OVERSIZE_FEE_PER_PLACE} грн за місце</li>
               <li>• Кур'єрський забір або доставка — +{COURIER_FEE} грн (до 30 кг)</li>
             </ul>
           </div>
