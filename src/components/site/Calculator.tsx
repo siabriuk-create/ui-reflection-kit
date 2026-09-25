@@ -169,35 +169,13 @@ export function Calculator() {
                   <label className="flex items-center gap-3 rounded-xl bg-surface p-4 text-sm font-medium text-foreground/85">
                     <input
                       type="checkbox"
-                      checked={oversize}
-                      onChange={(e) => setOversize(e.target.checked)}
-                      className="size-4 accent-[var(--accent)]"
-                    />
-                    Габарит 120+ см / без коробки
-                  </label>
-
-                  <label className="flex items-center gap-3 rounded-xl bg-surface p-4 text-sm font-medium text-foreground/85">
-                    <input
-                      type="checkbox"
                       checked={courier}
                       onChange={(e) => setCourier(e.target.checked)}
                       className="size-4 accent-[var(--accent)]"
                     />
                     Кур'єрський забір/доставка (+{COURIER_FEE} грн)
                   </label>
-
-                  {oversize && (
-                    <label className="block text-sm font-semibold text-primary sm:col-span-2">
-                      Кількість місць (по +{OVERSIZE_FEE_PER_PLACE} грн за місце)
-                      <input
-                        type="number"
-                        min={1}
-                        max={20}
-                        value={places}
-                        onChange={(e) => setPlaces(Number(e.target.value))}
-                        className="mt-2 h-11 w-full rounded-xl border border-input bg-background px-3 text-sm font-normal text-foreground outline-none focus:border-accent"
-                      />
-                    </label>
+                </div>
                   )}
                 </div>
               </fieldset>
