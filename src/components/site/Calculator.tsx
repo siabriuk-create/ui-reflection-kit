@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Calculator as CalcIcon, Check, Info, PackageOpen } from "lucide-react";
+import { useMemo, useState, type ReactNode } from "react";
+import { Calculator as CalcIcon, Check, Info } from "lucide-react";
 
 const SIZES = [
   { id: "small", label: "Мала (до 2 кг)", city: 70, ukraine: 90, max: 2 },
@@ -99,7 +99,7 @@ export function Calculator() {
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: ReactNode }) {
   return <label className="block text-sm font-semibold text-primary">{label}{children}</label>;
 }
 
