@@ -62,7 +62,9 @@
   --color-surface: var(--surface);
   --color-primary-soft: var(--primary-soft);
   --color-accent-soft: var(--accent-soft);
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-operations: var(--operations);
+  --font-sans: "Hind", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Archivo Black", "Hind", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
@@ -84,6 +86,9 @@
   --accent: oklch(0.65 0.21 38);
   --accent-foreground: oklch(0.99 0.01 80);
   --accent-soft: oklch(0.955 0.04 55);
+  --operations: oklch(0.17 0.055 258);
+  --map-fill: oklch(0.3 0.07 257 / 0.55);
+  --map-stroke: oklch(0.8 0.025 250 / 0.48);
   --gradient-hero: linear-gradient(
     100deg,
     color-mix(in oklab, var(--primary) 92%, transparent) 0%,
@@ -92,6 +97,8 @@
   );
   --shadow-card: 0 1px 2px oklch(0.32 0.115 261 / 0.06), 0 12px 30px -18px oklch(0.32 0.115 261 / 0.35);
   --shadow-lift: 0 18px 44px -20px oklch(0.32 0.115 261 / 0.45);
+  --shadow-operations: 0 24px 70px -30px oklch(0.05 0.04 258 / 0.8);
+  --gradient-operations: linear-gradient(90deg, oklch(0.13 0.055 258 / 0.97) 0%, oklch(0.17 0.06 258 / 0.88) 48%, oklch(0.13 0.04 258 / 0.7) 100%);
   --transition-base: 240ms cubic-bezier(0.22, 1, 0.36, 1);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.984 0.003 247.858);
@@ -169,6 +176,62 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
+
+  h1, h2, h3, h4 {
+    letter-spacing: 0;
+  }
+}
+
+@utility font-heading {
+  font-family: var(--font-heading);
+}
+
+@utility section-kicker {
+  color: var(--color-accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@utility field-control {
+  margin-top: 0.5rem;
+  height: 3rem;
+  width: 100%;
+  border-radius: 0.375rem;
+  border: 1px solid var(--color-input);
+  background: var(--color-surface);
+  padding-inline: 0.875rem;
+  color: var(--color-foreground);
+  font-size: 0.875rem;
+  font-weight: 400;
+  outline: none;
+
+  &:focus {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 15%, transparent);
+  }
+}
+
+.operations-grid {
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--primary-foreground) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--primary-foreground) 6%, transparent) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+.route-progress,
+.route-line {
+  animation: route-signal 2.4s ease-in-out infinite;
+}
+
+@keyframes route-signal {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .route-progress, .route-line { animation: none; }
 }
 
 @utility card-lift {

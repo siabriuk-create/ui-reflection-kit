@@ -1,159 +1,114 @@
-import { useMemo, useState } from "react";
-import { Calculator as CalcIcon } from "lucide-react";
+import { useMemo, useState, type ReactNode } from "react";
+import { Calculator as CalcIcon, Check, Info } from "lucide-react";
 
 const SIZES = [
-  { id: "small", label: "Мала (до 2 кг)", city: 70, ukraine: 90 },
-  { id: "medium", label: "Середня (до 10 кг)", city: 115, ukraine: 135 },
-  { id: "large", label: "Велика (до 30 кг)", city: 180, ukraine: 200 },
+  { id: "small", label: "Мала (до 2 кг)", city: 70, ukraine: 90, max: 2 },
+  { id: "medium", label: "Середня (до 10 кг)", city: 115, ukraine: 135, max: 10 },
+  { id: "large", label: "Велика (до 30 кг)", city: 180, ukraine: 200, max: 30 },
 ] as const;
 
-const ZONES = [
-  { id: "city", label: "По місту" },
-  { id: "ukraine", label: "По Україні" },
-] as const;
-
-type SizeId = (typeof SIZES)[number]["id"];
-type ZoneId = (typeof ZONES)[number]["id"];
-
-const COURIER_FEE = 60;
+const CITIES = ["Київ", "Львів", "Одеса", "Дніпро", "Харків", "Вінниця"];
+const FEES = { postamat: 10, village: 30, courier: 60 };
 
 export function Calculator() {
-  const [size, setSize] = useState<SizeId>("small");
-  const [zone, setZone] = useState<ZoneId>("city");
+  const [origin, setOrigin] = useState("Київ");
+  const [destination, setDestination] = useState("Львів");
+  const [weight, setWeight] = useState(1);
+  const [dimensions, setDimensions] = useState({ length: 20, width: 15, height: 10 });
+  const [postamat, setPostamat] = useState(false);
+  const [village, setVillage] = useState(false);
   const [courier, setCourier] = useState(false);
 
-  const selected = SIZES.find((s) => s.id === size) ?? SIZES[0];
-  const isUkraine = zone === "ukraine";
+  const calculation = useMemo(() => {
+    const normalizedWeight = Number.isFinite(weight) ? Math.max(weight, 0.1) : 0.1;
+    const size = SIZES.find((item) => normalizedWeight <= item.max) ?? SIZES[2];
+    const sameCity = origin === destination;
+    const base = sameCity ? size.city : size.ukraine;
+    const lines = [{ label: `${size.label} · ${sameCity ? "по місту" : "по Україні"}`, amount: base }];
+    if (postamat) lines.push({ label: "Доставка у поштомат", amount: FEES.postamat });
+    if (village) lines.push({ label: "Доставка у селище/село", amount: FEES.village });
+    if (courier) lines.push({ label: "Курʼєрський забір або доставка", amount: FEES.courier });
+    return { size, lines, total: lines.reduce((sum, line) => sum + line.amount, 0), overLimit: normalizedWeight > 30 };
+  }, [courier, destination, origin, postamat, village, weight]);
 
-  const breakdown = useMemo(() => {
-    const lines: { label: string; amount: number }[] = [];
-
-    const base = isUkraine ? selected.ukraine : selected.city;
-    lines.push({
-      label: `${selected.label} · ${isUkraine ? "по Україні" : "по місту"}`,
-      amount: base,
-    });
-
-    if (courier) {
-      lines.push({ label: "Кур'єрський забір або доставка", amount: COURIER_FEE });
-    }
-
-    const total = lines.reduce((sum, l) => sum + l.amount, 0);
-    return { lines, total };
-  }, [selected, isUkraine, courier]);
+  const updateDimension = (key: keyof typeof dimensions, value: string) => {
+    setDimensions((current) => ({ ...current, [key]: Math.max(1, Number(value) || 1) }));
+  };
 
   return (
-    <section id="rates" className="py-20 lg:py-28">
+    <section id="rates" className="bg-background py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="max-w-2xl">
-          <p className="text-sm font-semibold tracking-wide text-accent uppercase">Тарифи</p>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-primary sm:text-4xl">
-            Офіційні тарифи та розрахунок вартості
-          </h2>
+        <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div>
+            <p className="section-kicker">Розрахунок доставки</p>
+            <h2 className="mt-4 max-w-2xl font-heading text-4xl font-black text-primary sm:text-5xl">Точний тариф ще до відправлення</h2>
+          </div>
+          <p className="max-w-md text-sm leading-relaxed text-muted-foreground">Вкажіть маршрут, фактичну вагу та габарити. Категорія посилки визначиться автоматично.</p>
         </div>
 
-        {/* Таблиця базових тарифів */}
-        <div className="mt-10 overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-card)]">
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[480px] text-left text-sm">
-              <thead>
-                <tr className="bg-surface text-primary">
-                  <th className="px-6 py-4 font-semibold">Тип посилки</th>
-                  <th className="px-6 py-4 font-semibold">По місту</th>
-                  <th className="px-6 py-4 font-semibold">По Україні</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border">
-                {SIZES.map((s) => (
-                  <tr key={s.id} className="text-foreground/85">
-                    <td className="px-6 py-4 font-medium text-primary">{s.label}</td>
-                    <td className="px-6 py-4">{s.city} грн</td>
-                    <td className="px-6 py-4">{s.ukraine} грн</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="border-t border-border bg-surface/60 px-6 py-4 text-sm text-foreground/75">
-            <p className="font-semibold text-primary">Додатково:</p>
-            <ul className="mt-2">
-              <li>• Кур'єрський забір або доставка — +{COURIER_FEE} грн (до 30 кг)</li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Калькулятор */}
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-8">
+        <div className="mt-10 grid overflow-hidden rounded-lg border border-border bg-card shadow-[var(--shadow-card)] lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="p-6 sm:p-8 lg:p-10">
             <div className="grid gap-5 sm:grid-cols-2">
-              <label className="block text-sm font-semibold text-primary">
-                Тип посилки
-                <select
-                  value={size}
-                  onChange={(e) => setSize(e.target.value as SizeId)}
-                  className="mt-2 h-11 w-full rounded-xl border border-input bg-background px-3 text-sm font-normal text-foreground outline-none focus:border-accent"
-                >
-                  {SIZES.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.label}
-                    </option>
+              <Field label="Звідки"><select value={origin} onChange={(e) => setOrigin(e.target.value)} className="field-control">{CITIES.map((city) => <option key={city}>{city}</option>)}</select></Field>
+              <Field label="Куди"><select value={destination} onChange={(e) => setDestination(e.target.value)} className="field-control">{CITIES.map((city) => <option key={city}>{city}</option>)}</select></Field>
+              <Field label="Вага, кг"><input type="number" min="0.1" max="30" step="0.1" value={weight} onChange={(e) => setWeight(Number(e.target.value))} className="field-control" /></Field>
+              <div>
+                <span className="text-sm font-semibold text-primary">Габарити, см</span>
+                <div className="mt-2 grid grid-cols-3 gap-2">
+                  {(["length", "width", "height"] as const).map((key, index) => (
+                    <input key={key} aria-label={["Довжина", "Ширина", "Висота"][index]} type="number" min="1" value={dimensions[key]} onChange={(e) => updateDimension(key, e.target.value)} className="field-control px-2 text-center" />
                   ))}
-                </select>
-              </label>
-
-              <label className="block text-sm font-semibold text-primary">
-                Напрямок доставки
-                <select
-                  value={zone}
-                  onChange={(e) => setZone(e.target.value as ZoneId)}
-                  className="mt-2 h-11 w-full rounded-xl border border-input bg-background px-3 text-sm font-normal text-foreground outline-none focus:border-accent"
-                >
-                  {ZONES.map((z) => (
-                    <option key={z.id} value={z.id}>
-                      {z.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <fieldset className="sm:col-span-2">
-                <legend className="text-sm font-semibold text-primary">Додаткові опції</legend>
-                <div className="mt-3">
-                  <label className="flex items-center gap-3 rounded-xl bg-surface p-4 text-sm font-medium text-foreground/85">
-                    <input
-                      type="checkbox"
-                      checked={courier}
-                      onChange={(e) => setCourier(e.target.checked)}
-                      className="size-4 accent-[var(--accent)]"
-                    />
-                    Кур'єрський забір/доставка (+{COURIER_FEE} грн)
-                  </label>
                 </div>
-              </fieldset>
+              </div>
+            </div>
+
+            <fieldset className="mt-7">
+              <legend className="text-sm font-semibold text-primary">Додаткові послуги</legend>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                <Option checked={postamat} onChange={setPostamat} label="Поштомат" price={FEES.postamat} />
+                <Option checked={village} onChange={setVillage} label="Селище/село" price={FEES.village} />
+                <Option checked={courier} onChange={setCourier} label="Курʼєр" price={FEES.courier} />
+              </div>
+            </fieldset>
+
+            <div className="mt-8 overflow-x-auto border-t border-border pt-7">
+              <table className="w-full min-w-[480px] text-left text-sm">
+                <thead><tr className="text-muted-foreground"><th className="pb-3 font-medium">Тип посилки</th><th className="pb-3 font-medium">По місту</th><th className="pb-3 font-medium">По Україні</th></tr></thead>
+                <tbody className="divide-y divide-border">
+                  {SIZES.map((size) => <tr key={size.id} className={calculation.size.id === size.id ? "text-primary" : "text-foreground/70"}><td className="py-3 font-semibold">{size.label}</td><td className="py-3">{size.city} грн</td><td className="py-3">{size.ukraine} грн</td></tr>)}
+                </tbody>
+              </table>
             </div>
           </div>
 
-          <div className="flex flex-col justify-between rounded-3xl bg-primary p-8 text-primary-foreground shadow-[var(--shadow-lift)]">
+          <aside className="flex flex-col justify-between bg-primary p-7 text-primary-foreground sm:p-9 lg:p-10">
             <div>
-              <CalcIcon className="size-7 text-accent" />
-              <p className="mt-4 text-sm text-primary-foreground/75">Орієнтовна вартість</p>
-              <p className="mt-2 text-5xl font-extrabold tracking-tight">{breakdown.total} грн</p>
-
-              <ul className="mt-6 space-y-2 text-sm text-primary-foreground/85">
-                {breakdown.lines.map((line) => (
-                  <li key={line.label} className="flex items-baseline justify-between gap-4">
-                    <span>{line.label}</span>
-                    <span className="shrink-0 font-semibold">{line.amount} грн</span>
-                  </li>
-                ))}
+              <div className="flex items-center justify-between"><CalcIcon className="size-7 text-accent" /><span className="rounded-md border border-primary-foreground/15 px-3 py-1 text-xs">Онлайн-розрахунок</span></div>
+              <p className="mt-10 text-sm text-primary-foreground/60">Орієнтовна вартість</p>
+              <p className="mt-2 font-heading text-5xl font-black">{calculation.total} грн</p>
+              <ul className="mt-8 space-y-3 border-t border-primary-foreground/15 pt-6 text-sm">
+                {calculation.lines.map((line) => <li key={line.label} className="flex items-start justify-between gap-4"><span className="flex gap-2 text-primary-foreground/75"><Check className="mt-0.5 size-4 shrink-0 text-accent" />{line.label}</span><strong className="shrink-0">{line.amount} грн</strong></li>)}
               </ul>
+              {calculation.overLimit && <p className="mt-5 rounded-md bg-accent p-3 text-sm text-accent-foreground">Для відправлень понад 30 кг потрібен індивідуальний розрахунок.</p>}
             </div>
-            <p className="mt-8 text-sm text-primary-foreground/70">
-              Остаточна вартість залежить від фактичної ваги та габаритів після огляду відправлення.
-            </p>
-          </div>
+            <div className="mt-10 flex gap-3 border-t border-primary-foreground/15 pt-6 text-xs text-primary-foreground/55"><Info className="size-4 shrink-0 text-accent" /><p>Габарити: {dimensions.length} × {dimensions.width} × {dimensions.height} см. Прихованих доплат за розмір немає.</p></div>
+          </aside>
         </div>
       </div>
     </section>
+  );
+}
+
+function Field({ label, children }: { label: string; children: ReactNode }) {
+  return <label className="block text-sm font-semibold text-primary">{label}{children}</label>;
+}
+
+function Option({ checked, onChange, label, price }: { checked: boolean; onChange: (value: boolean) => void; label: string; price: number }) {
+  return (
+    <label className={`flex cursor-pointer items-center gap-3 rounded-md border p-4 transition-colors ${checked ? "border-accent bg-accent-soft" : "border-border bg-surface hover:border-primary/30"}`}>
+      <input type="checkbox" checked={checked} onChange={(event) => onChange(event.target.checked)} className="sr-only" />
+      <span className={`grid size-5 shrink-0 place-items-center rounded-sm border ${checked ? "border-accent bg-accent text-accent-foreground" : "border-input bg-background"}`}>{checked && <Check className="size-3" />}</span>
+      <span className="min-w-0 text-sm font-semibold text-primary"><span className="block truncate">{label}</span><span className="text-xs font-normal text-muted-foreground">+{price} грн</span></span>
+    </label>
   );
 }

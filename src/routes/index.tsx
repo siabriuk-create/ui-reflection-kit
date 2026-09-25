@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
 import { Hero } from "@/components/site/Hero";
+import { Business } from "@/components/site/Business";
+import { Coverage } from "@/components/site/Coverage";
 import { Services } from "@/components/site/Services";
 import { Calculator } from "@/components/site/Calculator";
+import { Innovation } from "@/components/site/Innovation";
 import { About } from "@/components/site/About";
 import { Testimonials } from "@/components/site/Testimonials";
 import { Contacts } from "@/components/site/Contacts";
@@ -10,7 +13,7 @@ import { VoiceWidget } from "@/components/site/VoiceWidget";
 
 const title = "NovaExpert — швидка логістика та доставка посилок по Україні";
 const description =
-  "Експрес-доставка за 20 годин, професійне пакування, кур'єрський забір та вантажні перевезення. Розрахуйте вартість відправлення онлайн.";
+  "Відстеження посилок, експрес-доставка, B2B-фулфілмент і точний розрахунок вартості по Україні з NovaExpert.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,8 +35,11 @@ function Index() {
       <Header />
       <main>
         <Hero />
-        <Services />
+        <Business />
+        <Coverage />
         <Calculator />
+        <Services />
+        <Innovation />
         <About />
         <Testimonials />
       </main>
