@@ -176,8 +176,6 @@ export function Calculator() {
                     Кур'єрський забір/доставка (+{COURIER_FEE} грн)
                   </label>
                 </div>
-                  )}
-                </div>
               </fieldset>
             </div>
           </div>
