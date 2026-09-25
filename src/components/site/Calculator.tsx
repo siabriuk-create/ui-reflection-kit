@@ -17,7 +17,6 @@ type ZoneId = (typeof ZONES)[number]["id"];
 
 const VILLAGE_FEE = 30;
 const POSTAMAT_FEE = 10;
-const OVERSIZE_FEE_PER_PLACE = 100;
 const COURIER_FEE = 60;
 
 export function Calculator() {
@@ -25,8 +24,6 @@ export function Calculator() {
   const [zone, setZone] = useState<ZoneId>("city");
   const [village, setVillage] = useState(false);
   const [postamat, setPostamat] = useState(false);
-  const [oversize, setOversize] = useState(false);
-  const [places, setPlaces] = useState(1);
   const [courier, setCourier] = useState(false);
 
   const selected = SIZES.find((s) => s.id === size) ?? SIZES[0];
@@ -47,21 +44,13 @@ export function Calculator() {
     if (postamat) {
       lines.push({ label: "Доставка у поштомат", amount: POSTAMAT_FEE });
     }
-    if (oversize) {
-      const count = Math.max(1, Math.min(20, Math.round(places)));
-      const word = count % 10 === 1 && count !== 11 ? "місце" : count % 10 >= 2 && count % 10 <= 4 && (count < 12 || count > 14) ? "місця" : "місць";
-      lines.push({
-        label: `Габарит понад 120 см / без коробки · ${count} ${word}`,
-        amount: OVERSIZE_FEE_PER_PLACE * count,
-      });
-    }
     if (courier) {
       lines.push({ label: "Кур'єрський забір або доставка", amount: COURIER_FEE });
     }
 
     const total = lines.reduce((sum, l) => sum + l.amount, 0);
     return { lines, total };
-  }, [selected, isUkraine, village, postamat, oversize, places, courier]);
+  }, [selected, isUkraine, village, postamat, courier]);
 
   return (
     <section id="rates" className="py-20 lg:py-28">
@@ -100,7 +89,6 @@ export function Calculator() {
             <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">
               <li>• Доставка у селища/села — +{VILLAGE_FEE} грн</li>
               <li>• Доставка у поштомат — +{POSTAMAT_FEE} грн</li>
-              <li>• Габарит понад 120 см або без коробки — +{OVERSIZE_FEE_PER_PLACE} грн за місце</li>
               <li>• Кур'єрський забір або доставка — +{COURIER_FEE} грн (до 30 кг)</li>
             </ul>
           </div>
@@ -181,36 +169,12 @@ export function Calculator() {
                   <label className="flex items-center gap-3 rounded-xl bg-surface p-4 text-sm font-medium text-foreground/85">
                     <input
                       type="checkbox"
-                      checked={oversize}
-                      onChange={(e) => setOversize(e.target.checked)}
-                      className="size-4 accent-[var(--accent)]"
-                    />
-                    Габарит 120+ см / без коробки
-                  </label>
-
-                  <label className="flex items-center gap-3 rounded-xl bg-surface p-4 text-sm font-medium text-foreground/85">
-                    <input
-                      type="checkbox"
                       checked={courier}
                       onChange={(e) => setCourier(e.target.checked)}
                       className="size-4 accent-[var(--accent)]"
                     />
                     Кур'єрський забір/доставка (+{COURIER_FEE} грн)
                   </label>
-
-                  {oversize && (
-                    <label className="block text-sm font-semibold text-primary sm:col-span-2">
-                      Кількість місць (по +{OVERSIZE_FEE_PER_PLACE} грн за місце)
-                      <input
-                        type="number"
-                        min={1}
-                        max={20}
-                        value={places}
-                        onChange={(e) => setPlaces(Number(e.target.value))}
-                        className="mt-2 h-11 w-full rounded-xl border border-input bg-background px-3 text-sm font-normal text-foreground outline-none focus:border-accent"
-                      />
-                    </label>
-                  )}
                 </div>
               </fieldset>
             </div>
