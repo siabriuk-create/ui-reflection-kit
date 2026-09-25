@@ -76,8 +76,8 @@ const PACKING = [
 ];
 
 export function Services() {
-  const [active, setActive] = useState(PACKING[0].id);
-  const current = PACKING.find((p) => p.id === active) ?? PACKING[0];
+  const [active, setActive] = useState("fragile");
+  const current = PACKING.find((p) => p.id === active) ?? PACKING[0]!;
 
   return (
     <section id="services" className="bg-surface py-20 lg:py-28">

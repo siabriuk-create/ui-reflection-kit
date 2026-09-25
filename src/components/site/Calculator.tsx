@@ -21,14 +21,14 @@ const CITIES: Record<string, number> = {
 const CITY_NAMES = Object.keys(CITIES);
 
 export function Calculator() {
-  const [type, setType] = useState(TYPES[1].id);
+  const [type, setType] = useState("p2");
   const [from, setFrom] = useState("Київ");
   const [to, setTo] = useState("Львів");
   const [courier, setCourier] = useState(true);
 
   const price = useMemo(() => {
-    const t = TYPES.find((x) => x.id === type) ?? TYPES[0];
-    const distance = Math.max(40, Math.abs(CITIES[from] - CITIES[to]) || 320);
+    const t = TYPES.find((x) => x.id === type) ?? { base: 70, perKm: 0.35 };
+    const distance = Math.max(40, Math.abs((CITIES[from] ?? 0) - (CITIES[to] ?? 0)) || 320);
     return Math.round((t.base + distance * t.perKm + (courier ? 50 : 0)) / 5) * 5;
   }, [type, from, to, courier]);
 
