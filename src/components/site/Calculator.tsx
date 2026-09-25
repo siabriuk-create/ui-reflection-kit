@@ -44,21 +44,13 @@ export function Calculator() {
     if (postamat) {
       lines.push({ label: "Доставка у поштомат", amount: POSTAMAT_FEE });
     }
-    if (oversize) {
-      const count = Math.max(1, Math.min(20, Math.round(places)));
-      const word = count % 10 === 1 && count !== 11 ? "місце" : count % 10 >= 2 && count % 10 <= 4 && (count < 12 || count > 14) ? "місця" : "місць";
-      lines.push({
-        label: `Габарит понад 120 см / без коробки · ${count} ${word}`,
-        amount: OVERSIZE_FEE_PER_PLACE * count,
-      });
-    }
     if (courier) {
       lines.push({ label: "Кур'єрський забір або доставка", amount: COURIER_FEE });
     }
 
     const total = lines.reduce((sum, l) => sum + l.amount, 0);
     return { lines, total };
-  }, [selected, isUkraine, village, postamat, oversize, places, courier]);
+  }, [selected, isUkraine, village, postamat, courier]);
 
   return (
     <section id="rates" className="py-20 lg:py-28">
