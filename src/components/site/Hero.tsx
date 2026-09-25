@@ -1,6 +1,6 @@
 import { ShieldCheck, Timer, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import heroImg from "@/assets/hero-logistics.jpg";
+import heroAsset from "@/assets/hero-logistics.jpg.asset.json";
 
 const STATS = [
   { icon: Timer, value: "24 год", label: "Доставка між містами" },
@@ -12,10 +12,10 @@ export function Hero() {
   return (
     <section id="top" className="relative isolate overflow-hidden">
       <img
-        src={heroImg}
-        alt="Сортування посилок на складі NovaExpert"
+        src={heroAsset.url}
+        alt="Логістичний центр NovaExpert: склад, фури та дрони"
         width={1920}
-        height={1088}
+        height={1080}
         className="absolute inset-0 -z-10 size-full object-cover"
       />
       <div
