@@ -24,7 +24,9 @@ export function Calculator() {
     const size = SIZES.find((item) => normalizedWeight <= item.max) ?? SIZES[2];
     const sameCity = origin === destination;
     const base = sameCity ? size.city : size.ukraine;
-    const lines = [{ label: `${size.label} · ${sameCity ? "по місту" : "по Україні"}`, amount: base }];
+    const lines: Array<{ label: string; amount: number }> = [
+      { label: `${size.label} · ${sameCity ? "по місту" : "по Україні"}`, amount: base },
+    ];
     if (postamat) lines.push({ label: "Доставка у поштомат", amount: FEES.postamat });
     if (village) lines.push({ label: "Доставка у селище/село", amount: FEES.village });
     if (courier) lines.push({ label: "Курʼєрський забір або доставка", amount: FEES.courier });
