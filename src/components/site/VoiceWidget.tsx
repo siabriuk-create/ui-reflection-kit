@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export function VoiceWidget() {
-  const [ready, setReady] = useState(false);
-
   useEffect(() => {
-    const src = "https://unpkg.com/@elevenlabs/convai-widget-embed";
+    const src = "https://elevenlabs.io/convai-widget/index.js";
     if (!document.querySelector(`script[src="${src}"]`)) {
       const script = document.createElement("script");
       script.src = src;
@@ -12,12 +10,13 @@ export function VoiceWidget() {
       script.type = "text/javascript";
       document.body.appendChild(script);
     }
-    setReady(true);
   }, []);
 
-  if (!ready) return null;
-
-  return <elevenlabs-convai agent-id="agent_8701k3h41as5ft5bgvr8cfemk" />;
+  return (
+    <div className="voice-widget-slot" aria-label="Голосовий помічник NovaExpert">
+      <elevenlabs-convai agent-id="agent_8701k3h41as5ft5bgvr8cfemk" />
+    </div>
+  );
 }
 
 declare module "react" {

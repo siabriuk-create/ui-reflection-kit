@@ -9,7 +9,6 @@ import { Innovation } from "@/components/site/Innovation";
 import { About } from "@/components/site/About";
 import { Testimonials } from "@/components/site/Testimonials";
 import { Contacts } from "@/components/site/Contacts";
-import { VoiceWidget } from "@/components/site/VoiceWidget";
 
 const title = "NovaExpert — швидка логістика та доставка посилок по Україні";
 const description =
@@ -44,7 +43,6 @@ function Index() {
         <Testimonials />
       </main>
       <Contacts />
-      <VoiceWidget />
     </div>
   );
 }
