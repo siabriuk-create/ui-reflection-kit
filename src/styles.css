@@ -224,14 +224,65 @@
   animation: route-signal 2.4s ease-in-out infinite;
 }
 
+.route-line {
+  animation-name: route-dash;
+  stroke-dashoffset: 12;
+}
+
+.price-update {
+  animation: price-update 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.cost-breakdown,
+.packing-change {
+  animation: content-reveal 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.innovation-card {
+  animation: content-reveal 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.innovation-card:nth-child(2) { animation-delay: 130ms; }
+.innovation-card:nth-child(3) { animation-delay: 260ms; }
+
+.innovation-icon {
+  animation: tech-float 3.2s ease-in-out infinite;
+  transition: transform var(--transition-base), background-color var(--transition-base);
+}
+
+.innovation-card:nth-child(2) .innovation-icon { animation-delay: 350ms; }
+.innovation-card:nth-child(3) .innovation-icon { animation-delay: 700ms; }
+.innovation-card:hover .innovation-icon { transform: translateY(-4px) scale(1.06); }
+
 @keyframes route-signal {
   0%, 100% { opacity: 0.55; }
   50% { opacity: 1; }
 }
 
+@keyframes route-dash {
+  0% { stroke-dashoffset: 12; opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0.5; }
+}
+
+@keyframes price-update {
+  from { opacity: 0.55; transform: translateY(6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes content-reveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tech-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .route-progress, .route-line { animation: none; }
+  .route-progress, .route-line, .price-update, .cost-breakdown, .packing-change, .innovation-card, .innovation-icon { animation: none; }
 }
 
 @utility card-lift {

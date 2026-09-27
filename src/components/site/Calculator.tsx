@@ -8,15 +8,13 @@ const SIZES = [
 ] as const;
 
 const CITIES = ["Київ", "Львів", "Одеса", "Дніпро", "Харків", "Вінниця"];
-const FEES = { postamat: 10, village: 30, courier: 60 };
+const COURIER_FEE = 60;
 
 export function Calculator() {
   const [origin, setOrigin] = useState("Київ");
   const [destination, setDestination] = useState("Львів");
   const [weight, setWeight] = useState(1);
   const [dimensions, setDimensions] = useState({ length: 20, width: 15, height: 10 });
-  const [postamat, setPostamat] = useState(false);
-  const [village, setVillage] = useState(false);
   const [courier, setCourier] = useState(false);
 
   const calculation = useMemo(() => {
@@ -27,11 +25,9 @@ export function Calculator() {
     const lines: Array<{ label: string; amount: number }> = [
       { label: `${size.label} · ${sameCity ? "по місту" : "по Україні"}`, amount: base },
     ];
-    if (postamat) lines.push({ label: "Доставка у поштомат", amount: FEES.postamat });
-    if (village) lines.push({ label: "Доставка у селище/село", amount: FEES.village });
-    if (courier) lines.push({ label: "Курʼєрський забір або доставка", amount: FEES.courier });
+    if (courier) lines.push({ label: "Курʼєрський забір або доставка", amount: COURIER_FEE });
     return { size, lines, total: lines.reduce((sum, line) => sum + line.amount, 0), overLimit: normalizedWeight > 30 };
-  }, [courier, destination, origin, postamat, village, weight]);
+  }, [courier, destination, origin, weight]);
 
   const updateDimension = (key: keyof typeof dimensions, value: string) => {
     setDimensions((current) => ({ ...current, [key]: Math.max(1, Number(value) || 1) }));
@@ -66,10 +62,8 @@ export function Calculator() {
 
             <fieldset className="mt-7">
               <legend className="text-sm font-semibold text-primary">Додаткові послуги</legend>
-              <div className="mt-3 grid gap-2 sm:grid-cols-3">
-                <Option checked={postamat} onChange={setPostamat} label="Поштомат" price={FEES.postamat} />
-                <Option checked={village} onChange={setVillage} label="Селище/село" price={FEES.village} />
-                <Option checked={courier} onChange={setCourier} label="Курʼєр" price={FEES.courier} />
+              <div className="mt-3 max-w-sm">
+                <Option checked={courier} onChange={setCourier} label="Курʼєрський забір або доставка" price={COURIER_FEE} />
               </div>
             </fieldset>
 
@@ -87,8 +81,8 @@ export function Calculator() {
             <div>
               <div className="flex items-center justify-between"><CalcIcon className="size-7 text-accent" /><span className="rounded-md border border-primary-foreground/15 px-3 py-1 text-xs">Онлайн-розрахунок</span></div>
               <p className="mt-10 text-sm text-primary-foreground/60">Орієнтовна вартість</p>
-              <p className="mt-2 font-heading text-5xl font-black">{calculation.total} грн</p>
-              <ul className="mt-8 space-y-3 border-t border-primary-foreground/15 pt-6 text-sm">
+              <p key={calculation.total} aria-live="polite" className="price-update mt-2 font-heading text-5xl font-black">{calculation.total} грн</p>
+              <ul key={calculation.lines.map((line) => line.label).join("-")} className="cost-breakdown mt-8 space-y-3 border-t border-primary-foreground/15 pt-6 text-sm">
                 {calculation.lines.map((line) => <li key={line.label} className="flex items-start justify-between gap-4"><span className="flex gap-2 text-primary-foreground/75"><Check className="mt-0.5 size-4 shrink-0 text-accent" />{line.label}</span><strong className="shrink-0">{line.amount} грн</strong></li>)}
               </ul>
               {calculation.overLimit && <p className="mt-5 rounded-md bg-accent p-3 text-sm text-accent-foreground">Для відправлень понад 30 кг потрібен індивідуальний розрахунок.</p>}

@@ -24,8 +24,10 @@ export function Innovation() {
           </div>
           <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
             {TECH.map(({ icon: Icon, title, text }) => (
-              <article key={title} className="group bg-card p-7">
-                <Icon className="size-8 text-accent transition-transform duration-300 group-hover:-translate-y-1" />
+              <article key={title} className="innovation-card group bg-card p-7">
+                <span className="innovation-icon grid size-12 place-items-center rounded-md bg-accent-soft">
+                  <Icon className="size-7 text-accent" />
+                </span>
                 <h3 className="mt-16 font-heading text-xl font-black text-primary">{title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p>
               </article>
