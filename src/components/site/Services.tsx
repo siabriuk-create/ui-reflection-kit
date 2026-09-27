@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Boxes, FileText, PackageCheck, Shirt, Truck, Wine, Zap, Laptop } from "lucide-react";
+import { Boxes, FileText, Package, PackageCheck, Shirt, ShieldCheck, Truck, Wine, Zap, Laptop } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const SERVICES = [
   {
@@ -33,6 +34,8 @@ const PACKING = [
     id: "fragile",
     label: "Крихке",
     icon: Wine,
+    hint: "Подвійний захисний контур",
+    visual: "2–3 шари",
     rules: [
       "Обгортання бульбашковою плівкою у 2–3 шари.",
       "Жорстка коробка з наповнювачем по периметру.",
@@ -44,6 +47,8 @@ const PACKING = [
     id: "clothes",
     label: "Одяг",
     icon: Shirt,
+    hint: "Захист від вологи",
+    visual: "Сухо й щільно",
     rules: [
       "Вакуумний або поліетиленовий пакет від вологи.",
       "Складання без металевих вішаків усередині.",
@@ -55,6 +60,8 @@ const PACKING = [
     id: "docs",
     label: "Документи",
     icon: FileText,
+    hint: "Без згинів і вологи",
+    visual: "Жорсткий А4",
     rules: [
       "Жорсткий картонний конверт формату А4.",
       "Файл-протектор від вологи та згинів.",
@@ -66,6 +73,8 @@ const PACKING = [
     id: "tech",
     label: "Техніка",
     icon: Laptop,
+    hint: "Амортизація з усіх боків",
+    visual: "Зазор 5 см",
     rules: [
       "Заводська коробка або аналог із амортизацією.",
       "Акумулятори фіксуються окремо, клеми ізолюються.",
@@ -73,11 +82,11 @@ const PACKING = [
       "Обов'язкова страховка на повну вартість.",
     ],
   },
-];
+] as const;
 
 export function Services() {
   const [active, setActive] = useState("fragile");
-  const current = PACKING.find((p) => p.id === active) ?? PACKING[0]!;
+  const current = PACKING.find((p) => p.id === active) ?? PACKING[0];
 
   return (
     <section id="services" className="bg-surface py-20 lg:py-28">
@@ -118,11 +127,12 @@ export function Services() {
 
           <div className="mt-6 flex flex-wrap gap-2">
             {PACKING.map(({ id, label, icon: Icon }) => (
-              <button
+              <Button
                 key={id}
                 type="button"
+                variant="ghost"
                 onClick={() => setActive(id)}
-                className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition-all ${
+                className={`h-auto rounded-full px-4 py-2.5 text-sm font-semibold transition-all ${
                   active === id
                     ? "bg-primary text-primary-foreground shadow-[var(--shadow-card)]"
                     : "bg-surface text-foreground/75 hover:bg-primary-soft hover:text-primary"
@@ -130,21 +140,33 @@ export function Services() {
               >
                 <Icon className="size-4" />
                 {label}
-              </button>
+              </Button>
             ))}
           </div>
 
-          <ul className="mt-7 grid gap-3 sm:grid-cols-2">
-            {current.rules.map((rule) => (
-              <li
-                key={rule}
-                className="flex items-start gap-3 rounded-xl bg-surface p-4 text-sm text-foreground/85"
-              >
-                <span className="mt-1.5 size-2 shrink-0 rounded-full bg-accent" />
-                {rule}
-              </li>
-            ))}
-          </ul>
+          <div key={current.id} className="packing-change mt-7 grid gap-6 lg:grid-cols-[280px_1fr]">
+            <div className="relative min-h-56 overflow-hidden rounded-lg bg-primary p-6 text-primary-foreground">
+              <div className="operations-grid absolute inset-0 opacity-20" />
+              <div className="relative flex h-full flex-col justify-between">
+                <div className="flex items-start justify-between">
+                  <span className="grid size-14 place-items-center rounded-md bg-accent text-accent-foreground"><current.icon className="size-7" /></span>
+                  <ShieldCheck className="size-6 text-accent" />
+                </div>
+                <div className="relative mx-auto my-6 grid size-24 place-items-center rounded-lg border border-primary-foreground/20 bg-primary-foreground/10">
+                  <Package className="size-12 text-primary-foreground/85" />
+                  <span className="absolute -right-3 -bottom-3 rounded-md bg-accent px-2 py-1 text-xs font-bold text-accent-foreground">{current.visual}</span>
+                </div>
+                <div><p className="text-xs text-primary-foreground/55">Візуальна підказка</p><p className="mt-1 font-heading text-lg">{current.hint}</p></div>
+              </div>
+            </div>
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {current.rules.map((rule) => (
+                <li key={rule} className="flex items-start gap-3 rounded-lg bg-surface p-4 text-sm text-foreground/85">
+                  <span className="mt-1.5 size-2 shrink-0 rounded-full bg-accent" />{rule}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>

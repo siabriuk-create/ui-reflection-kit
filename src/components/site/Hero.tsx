@@ -51,9 +51,9 @@ export function Hero() {
             Відстежуйте рух відправлення в єдиній логістичній мережі NovaExpert.
           </p>
 
-          <form onSubmit={track} className="mt-9 max-w-2xl" aria-label="Відстеження посилки">
-            <div className="flex flex-col gap-2 rounded-lg border border-primary-foreground/15 bg-operations/85 p-2 shadow-[var(--shadow-operations)] backdrop-blur-xl sm:flex-row">
-              <label className="flex min-w-0 flex-1 items-center gap-3 px-4">
+          <form onSubmit={track} className="mt-9 max-w-2xl rounded-lg border border-primary-foreground/20 bg-operations/95 p-2 shadow-[var(--shadow-operations)] backdrop-blur-2xl" aria-label="Відстеження посилки">
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <label className="flex min-w-0 flex-1 items-center gap-3 rounded-md border border-primary-foreground/15 bg-primary-foreground/10 px-4 transition-colors focus-within:border-accent/70 focus-within:bg-primary-foreground/15">
                 <PackageSearch className="size-5 shrink-0 text-accent" />
                 <span className="sr-only">Номер накладної</span>
                 <input
