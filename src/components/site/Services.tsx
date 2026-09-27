@@ -87,6 +87,7 @@ const PACKING = [
 export function Services() {
   const [active, setActive] = useState("fragile");
   const current = PACKING.find((p) => p.id === active) ?? PACKING[0];
+  const CurrentIcon = current.icon;
 
   return (
     <section id="services" className="bg-surface py-20 lg:py-28">
@@ -149,7 +150,7 @@ export function Services() {
               <div className="operations-grid absolute inset-0 opacity-20" />
               <div className="relative flex h-full flex-col justify-between">
                 <div className="flex items-start justify-between">
-                  <span className="grid size-14 place-items-center rounded-md bg-accent text-accent-foreground"><current.icon className="size-7" /></span>
+                  <span className="grid size-14 place-items-center rounded-md bg-accent text-accent-foreground"><CurrentIcon className="size-7" /></span>
                   <ShieldCheck className="size-6 text-accent" />
                 </div>
                 <div className="relative mx-auto my-6 grid size-24 place-items-center rounded-lg border border-primary-foreground/20 bg-primary-foreground/10">

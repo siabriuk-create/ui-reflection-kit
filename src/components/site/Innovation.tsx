@@ -23,8 +23,8 @@ export function Innovation() {
             </div>
           </div>
           <div className="grid gap-px overflow-hidden rounded-lg border border-border bg-border sm:grid-cols-3">
-            {TECH.map(({ icon: Icon, title, text }, index) => (
-              <article key={title} className="innovation-card group bg-card p-7" style={{ animationDelay: `${index * 130}ms` }}>
+            {TECH.map(({ icon: Icon, title, text }) => (
+              <article key={title} className="innovation-card group bg-card p-7">
                 <span className="innovation-icon grid size-12 place-items-center rounded-md bg-accent-soft">
                   <Icon className="size-7 text-accent" />
                 </span>
