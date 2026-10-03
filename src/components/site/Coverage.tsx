@@ -66,9 +66,32 @@ export function Coverage() {
               {ROUTES.map((route) => (
                 <g key={route.id} className={active === route.id ? "opacity-100" : "opacity-25"}>
                   <line x1={route.x1} y1={route.y1} x2={route.x2} y2={route.y2} stroke="var(--accent)" strokeWidth="0.9" strokeDasharray="2 2" className={active === route.id ? "route-line" : ""} />
+                  <line
+                    x1={route.x1} y1={route.y1} x2={route.x2} y2={route.y2}
+                    stroke="transparent" strokeWidth="5" className="cursor-pointer"
+                    onMouseEnter={() => setTip({ x: (route.x1 + route.x2) / 2, y: (route.y1 + route.y2) / 2, title: `${route.from} — ${route.to}`, sub: `Нічний рейс · ${route.time}` })}
+                    onMouseLeave={() => setTip(null)}
+                    onClick={() => setActive(route.id)}
+                  />
                 </g>
               ))}
-              {HUBS.map((hub) => <g key={hub.name} filter="url(#hub-glow)"><circle cx={hub.x} cy={hub.y} r="2.4" fill="var(--operations)" stroke="var(--accent)" strokeWidth="0.7" /><circle cx={hub.x} cy={hub.y} r="0.8" fill="var(--accent)" /></g>)}
+              {HUBS.map((hub) => (
+                <g
+                  key={hub.name} filter="url(#hub-glow)" className="cursor-pointer"
+                  onMouseEnter={() => setTip({ x: hub.x, y: hub.y, title: hub.name, sub: hub.role })}
+                  onMouseLeave={() => setTip(null)}
+                >
+                  <circle cx={hub.x} cy={hub.y} r="2.4" fill="var(--operations)" stroke="var(--accent)" strokeWidth="0.7" />
+                  <circle cx={hub.x} cy={hub.y} r="0.8" fill="var(--accent)" />
+                </g>
+              ))}
+              {tip && (
+                <g pointerEvents="none" transform={`translate(${tipX} ${tipY})`}>
+                  <rect width={tipWidth} height="9.5" rx="1.6" fill="var(--operations)" stroke="var(--accent)" strokeWidth="0.3" opacity="0.97" />
+                  <text x="4" y="4" fontSize="3.1" fontWeight="700" fill="var(--primary-foreground)" fontFamily="inherit">{tip.title}</text>
+                  <text x="4" y="7.6" fontSize="2.4" fill="var(--accent)" fontFamily="inherit">{tip.sub}</text>
+                </g>
+              )}
             </svg>
             <div className="absolute top-4 left-4 rounded-md border border-primary-foreground/10 bg-operations/80 px-3 py-2 text-xs text-primary-foreground/65 backdrop-blur-md"><span className="mr-2 inline-block size-2 rounded-full bg-accent route-progress" />6 ключових хабів онлайн</div>
             <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between rounded-md border border-primary-foreground/10 bg-operations/85 p-4 backdrop-blur-md sm:left-auto sm:w-80">
