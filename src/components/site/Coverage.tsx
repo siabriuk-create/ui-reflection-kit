@@ -9,13 +9,15 @@ const ROUTES = [
 ] as const;
 
 const HUBS = [
-  { name: "Львів", x: 16, y: 47 },
-  { name: "Київ", x: 52, y: 40 },
-  { name: "Одеса", x: 44, y: 79 },
-  { name: "Дніпро", x: 68, y: 55 },
-  { name: "Харків", x: 80, y: 45 },
-  { name: "Вінниця", x: 42, y: 52 },
+  { name: "Львів", role: "Західний хаб", x: 16, y: 47 },
+  { name: "Київ", role: "Головний хаб", x: 52, y: 40 },
+  { name: "Одеса", role: "Портовий хаб", x: 44, y: 79 },
+  { name: "Дніпро", role: "Східний хаб", x: 68, y: 55 },
+  { name: "Харків", role: "Північно-східний хаб", x: 80, y: 45 },
+  { name: "Вінниця", role: "Центральний хаб", x: 42, y: 52 },
 ] as const;
+
+type Tip = { x: number; y: number; title: string; sub: string };
 
 const NETWORK_LINKS = [
   [16, 47, 42, 52], [42, 52, 52, 40], [42, 52, 44, 79],
