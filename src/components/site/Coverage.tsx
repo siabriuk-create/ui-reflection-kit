@@ -9,13 +9,15 @@ const ROUTES = [
 ] as const;
 
 const HUBS = [
-  { name: "Львів", x: 16, y: 47 },
-  { name: "Київ", x: 52, y: 40 },
-  { name: "Одеса", x: 44, y: 79 },
-  { name: "Дніпро", x: 68, y: 55 },
-  { name: "Харків", x: 80, y: 45 },
-  { name: "Вінниця", x: 42, y: 52 },
+  { name: "Львів", role: "Західний хаб", x: 16, y: 47 },
+  { name: "Київ", role: "Головний хаб", x: 52, y: 40 },
+  { name: "Одеса", role: "Портовий хаб", x: 44, y: 79 },
+  { name: "Дніпро", role: "Східний хаб", x: 68, y: 55 },
+  { name: "Харків", role: "Північно-східний хаб", x: 80, y: 45 },
+  { name: "Вінниця", role: "Центральний хаб", x: 42, y: 52 },
 ] as const;
+
+type Tip = { x: number; y: number; title: string; sub: string };
 
 const NETWORK_LINKS = [
   [16, 47, 42, 52], [42, 52, 52, 40], [42, 52, 44, 79],
@@ -27,7 +29,12 @@ const UKRAINE_OUTLINE =
 
 export function Coverage() {
   const [active, setActive] = useState<(typeof ROUTES)[number]["id"]>("kyiv-lviv");
+  const [tip, setTip] = useState<Tip | null>(null);
   const selected = ROUTES.find((route) => route.id === active) ?? ROUTES[0];
+
+  const tipWidth = tip ? Math.max(tip.title.length, tip.sub.length) * 1.9 + 8 : 0;
+  const tipX = tip ? Math.min(Math.max(tip.x - tipWidth / 2, 1), 99 - tipWidth) : 0;
+  const tipY = tip ? (tip.y > 14 ? tip.y - 12.5 : tip.y + 5) : 0;
 
   return (
     <section id="coverage" className="overflow-hidden bg-operations py-20 text-primary-foreground lg:py-28">
@@ -59,9 +66,32 @@ export function Coverage() {
               {ROUTES.map((route) => (
                 <g key={route.id} className={active === route.id ? "opacity-100" : "opacity-25"}>
                   <line x1={route.x1} y1={route.y1} x2={route.x2} y2={route.y2} stroke="var(--accent)" strokeWidth="0.9" strokeDasharray="2 2" className={active === route.id ? "route-line" : ""} />
+                  <line
+                    x1={route.x1} y1={route.y1} x2={route.x2} y2={route.y2}
+                    stroke="transparent" strokeWidth="5" className="cursor-pointer"
+                    onMouseEnter={() => setTip({ x: (route.x1 + route.x2) / 2, y: (route.y1 + route.y2) / 2, title: `${route.from} — ${route.to}`, sub: `Нічний рейс · ${route.time}` })}
+                    onMouseLeave={() => setTip(null)}
+                    onClick={() => setActive(route.id)}
+                  />
                 </g>
               ))}
-              {HUBS.map((hub) => <g key={hub.name} filter="url(#hub-glow)"><circle cx={hub.x} cy={hub.y} r="2.4" fill="var(--operations)" stroke="var(--accent)" strokeWidth="0.7" /><circle cx={hub.x} cy={hub.y} r="0.8" fill="var(--accent)" /></g>)}
+              {HUBS.map((hub) => (
+                <g
+                  key={hub.name} filter="url(#hub-glow)" className="cursor-pointer"
+                  onMouseEnter={() => setTip({ x: hub.x, y: hub.y, title: hub.name, sub: hub.role })}
+                  onMouseLeave={() => setTip(null)}
+                >
+                  <circle cx={hub.x} cy={hub.y} r="2.4" fill="var(--operations)" stroke="var(--accent)" strokeWidth="0.7" />
+                  <circle cx={hub.x} cy={hub.y} r="0.8" fill="var(--accent)" />
+                </g>
+              ))}
+              {tip && (
+                <g pointerEvents="none" transform={`translate(${tipX} ${tipY})`}>
+                  <rect width={tipWidth} height="9.5" rx="1.6" fill="var(--operations)" stroke="var(--accent)" strokeWidth="0.3" opacity="0.97" />
+                  <text x="4" y="4" fontSize="3.1" fontWeight="700" fill="var(--primary-foreground)" fontFamily="inherit">{tip.title}</text>
+                  <text x="4" y="7.6" fontSize="2.4" fill="var(--accent)" fontFamily="inherit">{tip.sub}</text>
+                </g>
+              )}
             </svg>
             <div className="absolute top-4 left-4 rounded-md border border-primary-foreground/10 bg-operations/80 px-3 py-2 text-xs text-primary-foreground/65 backdrop-blur-md"><span className="mr-2 inline-block size-2 rounded-full bg-accent route-progress" />6 ключових хабів онлайн</div>
             <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between rounded-md border border-primary-foreground/10 bg-operations/85 p-4 backdrop-blur-md sm:left-auto sm:w-80">
