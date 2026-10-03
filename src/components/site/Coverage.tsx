@@ -29,7 +29,12 @@ const UKRAINE_OUTLINE =
 
 export function Coverage() {
   const [active, setActive] = useState<(typeof ROUTES)[number]["id"]>("kyiv-lviv");
+  const [tip, setTip] = useState<Tip | null>(null);
   const selected = ROUTES.find((route) => route.id === active) ?? ROUTES[0];
+
+  const tipWidth = tip ? Math.max(tip.title.length, tip.sub.length) * 1.9 + 8 : 0;
+  const tipX = tip ? Math.min(Math.max(tip.x - tipWidth / 2, 1), 99 - tipWidth) : 0;
+  const tipY = tip ? (tip.y > 14 ? tip.y - 12.5 : tip.y + 5) : 0;
 
   return (
     <section id="coverage" className="overflow-hidden bg-operations py-20 text-primary-foreground lg:py-28">
