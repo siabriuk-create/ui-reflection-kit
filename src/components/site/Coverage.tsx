@@ -3,24 +3,27 @@ import { ArrowRight, MapPin, Radio, Route as RouteIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ROUTES = [
-  { id: "kyiv-lviv", from: "Київ", to: "Львів", time: "14 годин", x1: 62, y1: 45, x2: 18, y2: 42 },
-  { id: "kyiv-odesa", from: "Київ", to: "Одеса", time: "11 годин", x1: 62, y1: 45, x2: 49, y2: 81 },
-  { id: "kyiv-dnipro", from: "Київ", to: "Дніпро", time: "8 годин", x1: 62, y1: 45, x2: 77, y2: 58 },
+  { id: "kyiv-lviv", from: "Київ", to: "Львів", time: "14 годин", x1: 52, y1: 40, x2: 16, y2: 47 },
+  { id: "kyiv-odesa", from: "Київ", to: "Одеса", time: "11 годин", x1: 52, y1: 40, x2: 44, y2: 79 },
+  { id: "kyiv-dnipro", from: "Київ", to: "Дніпро", time: "8 годин", x1: 52, y1: 40, x2: 68, y2: 55 },
 ] as const;
 
 const HUBS = [
-  { name: "Львів", x: 18, y: 42 },
-  { name: "Київ", x: 62, y: 45 },
-  { name: "Одеса", x: 49, y: 81 },
-  { name: "Дніпро", x: 77, y: 58 },
-  { name: "Харків", x: 88, y: 42 },
-  { name: "Вінниця", x: 45, y: 52 },
+  { name: "Львів", x: 16, y: 47 },
+  { name: "Київ", x: 52, y: 40 },
+  { name: "Одеса", x: 44, y: 79 },
+  { name: "Дніпро", x: 68, y: 55 },
+  { name: "Харків", x: 80, y: 45 },
+  { name: "Вінниця", x: 42, y: 52 },
 ] as const;
 
 const NETWORK_LINKS = [
-  [18, 42, 45, 52], [45, 52, 62, 45], [45, 52, 49, 81],
-  [62, 45, 77, 58], [77, 58, 88, 42], [77, 58, 49, 81],
+  [16, 47, 42, 52], [42, 52, 52, 40], [42, 52, 44, 79],
+  [52, 40, 68, 55], [68, 55, 80, 45], [68, 55, 44, 79],
 ] as const;
+
+const UKRAINE_OUTLINE =
+  "M8 55 L13 49 L17 42 L22 36 L30 31 L38 28 L46 27 L54 27 L62 29 L70 31 L78 33 L86 38 L92 43 L87 47 L83 51 L81 57 L77 61 L73 64 L69 67 L65 71 L63 75 L61 80 L59 87 L57 91 L55 86 L53 80 L49 77 L44 79 L38 80 L32 76 L27 71 L22 67 L16 63 L11 60 Z";
 
 export function Coverage() {
   const [active, setActive] = useState<(typeof ROUTES)[number]["id"]>("kyiv-lviv");
@@ -48,11 +51,8 @@ export function Coverage() {
                 <filter id="hub-glow"><feGaussianBlur stdDeviation="1.4" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
                 <pattern id="map-dots" width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="0.25" fill="var(--map-stroke)" opacity="0.5" /></pattern>
               </defs>
-              <path d="M8 39 16 26 29 23 35 15 49 18 57 12 67 19 82 20 91 30 88 43 96 51 87 62 80 75 64 78 57 88 43 83 30 87 23 73 12 68 15 55 6 49Z" fill="var(--map-fill)" stroke="var(--map-stroke)" strokeWidth="0.7" />
-              <path d="M8 39 16 26 29 23 35 15 49 18 57 12 67 19 82 20 91 30 88 43 96 51 87 62 80 75 64 78 57 88 43 83 30 87 23 73 12 68 15 55 6 49Z" fill="url(#map-dots)" />
-              <g fill="none" stroke="var(--map-stroke)" strokeWidth="0.28" opacity="0.48">
-                <path d="M16 26 23 38 18 54 12 68M29 23 34 38 30 57 23 73M35 15 44 31 45 52 43 83M49 18 55 30 62 45 57 88M57 12 67 32 64 49 64 78M67 19 76 36 77 58 80 75M82 20 80 31 88 43 87 62M23 38 34 38 44 31 55 30 67 32 80 31M18 54 30 57 45 52 64 49 77 58 87 62" />
-              </g>
+              <path d={UKRAINE_OUTLINE} fill="var(--map-fill)" stroke="var(--map-stroke)" strokeWidth="0.7" strokeLinejoin="round" />
+              <path d={UKRAINE_OUTLINE} fill="url(#map-dots)" />
               <g stroke="var(--map-stroke)" strokeWidth="0.34" strokeDasharray="1 2" opacity="0.45">
                 {NETWORK_LINKS.map(([x1, y1, x2, y2]) => <line key={`${x1}-${y1}-${x2}-${y2}`} x1={x1} y1={y1} x2={x2} y2={y2} />)}
               </g>
